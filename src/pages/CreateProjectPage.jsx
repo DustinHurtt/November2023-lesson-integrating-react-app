@@ -1,10 +1,11 @@
 // src/pages/CreateProjectPage.jsx
 
 import { useState } from "react";
-import axios from "axios";
+
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "https://project-management-api-4641927fee65.herokuapp.com";
+import { post } from "../services/authService";
+
 
 function CreateProjectPage(props) {
   const [title, setTitle] = useState("");
@@ -16,8 +17,7 @@ function CreateProjectPage(props) {
     e.preventDefault();
  
     const requestBody = { title, description };
-    axios
-      .post(`${API_URL}/projects`, requestBody)
+    post('/projects', requestBody)
       .then((response) => {
         // Once the project is created navigate to Project List Page
         navigate("/projects");

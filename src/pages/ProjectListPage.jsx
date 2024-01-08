@@ -1,20 +1,22 @@
 // src/pages/ProjectListPage.jsx
 
 import { useState, useEffect } from "react";
-import axios from "axios";
+
 import { Link } from "react-router-dom";
 import ProjectCard from "../components/ProjectCard";
 
-const API_URL = "https://project-management-api-4641927fee65.herokuapp.com";
+import { get } from "../services/authService";
 
 
 function ProjectListPage() {
   const [projects, setProjects] = useState([]);
 
   const getAllProjects = () => {
-    axios
-      .get(`${API_URL}/projects?_embed=tasks`)
-      .then((response) => setProjects(response.data))
+    
+    get('/projects')
+      .then((response) => {
+        console.log("projects", response.data)
+        setProjects(response.data)})
       .catch((error) => console.log(error));
   };
 

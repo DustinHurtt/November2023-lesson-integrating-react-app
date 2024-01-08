@@ -1,13 +1,12 @@
 // src/pages/LoginPage.jsx
 
 import { useContext, useState } from "react";
-import axios from "axios";
+
 import { Link, useNavigate } from "react-router-dom";
 
 import { AuthContext } from "../context/auth.context";
 
-const API_URL = "http://localhost:4000";
-
+import { post } from "../services/authService";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -26,7 +25,7 @@ function LoginPage() {
     e.preventDefault();
     const requestBody = { email, password };
  
-    axios.post(`${API_URL}/auth/login`, requestBody)
+    post('/auth/login', requestBody)
       .then((response) => {
       // Request to the server's endpoint `/auth/login` returns a response
       // with the JWT string ->  response.data.authToken
@@ -39,7 +38,9 @@ function LoginPage() {
         navigate('/');                             // <== ADD      
       })
       .catch((error) => {
+        
         const errorDescription = error.response.data.message;
+        console.log("LOGIN ERROR", error.response)
         setErrorMessage(errorDescription);
       })
   };

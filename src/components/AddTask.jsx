@@ -1,27 +1,27 @@
 // src/components/AddTask.jsx
 
 import { useState } from "react";
-import axios from "axios";
 
-const API_URL = "https://project-management-api-4641927fee65.herokuapp.com";
+import { post } from "../services/authService";
 
 
 function AddTask({ refreshProject, projectId }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  projectId = Number(projectId)
+  // projectId = Number(projectId)
 
   
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    console.log("project ID ===>", projectId)
  
     // We need the project id when creating the new task
     // Create an object representing the body of the POST request
-    const requestBody = { title, description, projectId };
+    const requestBody = { title, description};
  
-    axios
-      .post(`${API_URL}/tasks`, requestBody)
+    post(`/tasks/${projectId}`, requestBody)
       .then((response) => {
 
         console.log("Adding task ===>", response.data)

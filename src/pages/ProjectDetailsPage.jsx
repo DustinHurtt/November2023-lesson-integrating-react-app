@@ -1,37 +1,42 @@
 // src/pages/ProjectDetailsPage.jsx
 
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect, useContext } from "react";
+
+import { AuthContext } from "../context/auth.context";
+
 import { Link, useParams } from "react-router-dom";
 import AddTask from "../components/AddTask";
 import TaskCard from "../components/TaskCard";
 
-const API_URL = "https://project-management-api-4641927fee65.herokuapp.com"; 
+import { get } from "../services/authService";
 
-
-function ProjectDetailsPage () {
+function ProjectDetailsPage() {
   const [project, setProject] = useState(null);
 
-  const { projectId } = useParams()
+  const { projectId } = useParams();
 
-  const getProject = () => {   
-    console.log("Getting project")       //  <== ADD A NEW FUNCTION
-    axios
-      .get(`${API_URL}/projects/${projectId}?_embed=tasks`)
+  const { user } = useContext(AuthContext);
+
+  const getProject = () => {
+    console.log("Getting project"); //  <== ADD A NEW FUNCTION
+    get(`/projects/${projectId}`)
       .then((response) => {
         const oneProject = response.data;
-        console.log("Project ===>", oneProject)
+        console.log("Project ===>", oneProject);
         setProject(oneProject);
       })
       .catch((error) => console.log(error));
   };
-  
-  
-  useEffect(()=> {            // <== ADD AN EFFECT
-    getProject();
-  }, [] );
 
-  
+  const isOwner = () => {
+    return project.owner._id == user._id;
+  };
+
+  useEffect(() => {
+    // <== ADD AN EFFECT
+    getProject();
+  }, []);
+
   return (
     <div className="ProjectDetailsPage">
       {project && (
@@ -41,20 +46,22 @@ function ProjectDetailsPage () {
         </>
       )}
 
-      <AddTask refreshProject={getProject} projectId={projectId} />
+      {project && user && isOwner() && (
+        <AddTask refreshProject={getProject} projectId={projectId} />
+      )}
 
       {project &&
-        project.tasks.map((task) => (
-            <TaskCard key={task.id} {...task} />
-      ))}
+        project.tasks.map((task) => <TaskCard key={task.id} {...task} />)}
 
       <Link to="/projects">
         <button>Back to projects</button>
       </Link>
 
-      <Link to={`/projects/edit/${projectId}`}>
-        <button>Edit Project</button>
-      </Link>   
+      {project && user && isOwner() && (
+        <Link to={`/projects/edit/${projectId}`}>
+          <button>Edit Project</button>
+        </Link>
+      )}
     </div>
   );
 }

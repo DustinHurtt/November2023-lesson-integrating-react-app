@@ -1,9 +1,8 @@
 // src/pages/EditProjectPage.jsx
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import axios from "axios";
 
-const API_URL = "https://project-management-api-4641927fee65.herokuapp.com";
+import { get, put, axiosDelete } from "../services/authService";
 
 function EditProjectPage() {
   const [title, setTitle] = useState("");
@@ -16,8 +15,7 @@ function EditProjectPage() {
  // This effect will run after the initial render and each time
  // the `projectId` from the URL parameter changes
   useEffect(() => {                                 // <== ADD
-    axios
-      .get(`${API_URL}/projects/${projectId}`)
+    get(`/projects/${projectId}`)
       .then((response) => {
         /* 
           We update the state with the project data coming from the response.
@@ -37,8 +35,7 @@ function EditProjectPage() {
     const requestBody = { title, description };
  
     // Make a PUT request to the API update the project
-    axios
-      .put(`${API_URL}/projects/${projectId}`, requestBody)
+    put(`/projects/${projectId}`, requestBody)
       .then((response) => {
         // Once the request is resolved successfully and the project
         // is updated we navigate back to the Project Details page (client-side)
@@ -51,8 +48,7 @@ function EditProjectPage() {
 
   const deleteProject = () => {                    //  <== ADD
     // Make a DELETE request to delete the project
-    axios
-      .delete(`${API_URL}/projects/${projectId}`)
+    axiosDelete(`/projects/${projectId}`)
       .then(() => {
         // Once the delete request is resolved successfully
         // navigate back to the list of projects.
