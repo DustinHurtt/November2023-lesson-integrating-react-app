@@ -8,13 +8,13 @@ function EditProjectPage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  const { projectId } = useParams();            // <== ADD
-  const navigate = useNavigate();              // <== ADD
-  
- 
- // This effect will run after the initial render and each time
- // the `projectId` from the URL parameter changes
-  useEffect(() => {                                 // <== ADD
+  const { projectId } = useParams(); // <== ADD
+  const navigate = useNavigate(); // <== ADD
+
+  // This effect will run after the initial render and each time
+  // the `projectId` from the URL parameter changes
+  useEffect(() => {
+    // <== ADD
     get(`/projects/${projectId}`)
       .then((response) => {
         /* 
@@ -26,27 +26,28 @@ function EditProjectPage() {
         setDescription(oneProject.description);
       })
       .catch((error) => console.log(error));
-    
   }, [projectId]);
 
-  const handleFormSubmit = (e) => {                     // <== ADD
+  const handleFormSubmit = (e) => {
+    // <== ADD
     e.preventDefault();
     // Create an object representing the body of the PUT request
     const requestBody = { title, description };
- 
+
     // Make a PUT request to the API update the project
     put(`/projects/${projectId}`, requestBody)
       .then((response) => {
         // Once the request is resolved successfully and the project
         // is updated we navigate back to the Project Details page (client-side)
-        navigate(`/projects/${projectId}`)
+        navigate(`/projects/${projectId}`);
       })
       .catch((err) => {
-        console.log(err)
-      })
+        console.log(err);
+      });
   };
 
-  const deleteProject = () => {                    //  <== ADD
+  const deleteProject = () => {
+    //  <== ADD
     // Make a DELETE request to delete the project
     axiosDelete(`/projects/${projectId}`)
       .then(() => {
@@ -55,8 +56,8 @@ function EditProjectPage() {
         navigate("/projects");
       })
       .catch((err) => console.log(err));
-  };  
-  
+  };
+
   return (
     <div className="EditProjectPage">
       <h3>Edit the Project</h3>
@@ -69,7 +70,7 @@ function EditProjectPage() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        
+
         <label>Description:</label>
         <textarea
           name="description"
